@@ -1,17 +1,17 @@
 import { useState } from "react";
-import { Form } from "react-bootstrap";
+import { Form, InputGroup } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 
 const ModalAddedData = () => {
   const [show, setShow] = useState(false);
-
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
   return (
     <div>
-      <Button variant="primary" onClick={handleShow}>
-        Launch demo modal
+      <Button className="mt-3" variant="primary" onClick={handleShow}>
+        Please Open The Modal
       </Button>
 
       <Modal show={show} onHide={handleClose}>
@@ -21,12 +21,15 @@ const ModalAddedData = () => {
         <Modal.Body>
           <Form>
             <Form.Group className="mb-3" controlId="formGroupEmail">
-              <Form.Label>Email address</Form.Label>
-              <Form.Control type="email" placeholder="Enter email" />
+              <Form.Label>Income Section Name</Form.Label>
+              <Form.Control placeholder="Please Enter Income Section" />
             </Form.Group>
             <Form.Group className="mb-3" controlId="formGroupPassword">
-              <Form.Label>Password</Form.Label>
-              <Form.Control type="password" placeholder="Password" />
+              <Form.Label>Status</Form.Label>
+              <Form.Select aria-label="Default select example">
+                <option value="1">Active</option>
+                <option value="2">Inactive</option>
+              </Form.Select>
             </Form.Group>
           </Form>
         </Modal.Body>
@@ -34,8 +37,9 @@ const ModalAddedData = () => {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleClose}>
-            Save Changes
+
+          <Button type="submit" variant="primary">
+            Submit Data
           </Button>
         </Modal.Footer>
       </Modal>
