@@ -1,19 +1,16 @@
+import React from "react";
 import { useState } from "react";
-import { Form, InputGroup } from "react-bootstrap";
+import { Badge, Form, InputGroup, Stack } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
-import { useAddLeaveMutation } from "../Features/apiSlice";
 
-const ModalAddedData = () => {
+const UpdateData = () => {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-
-  const [AddLeave, { isLoading, error }] = useAddLeaveMutation();
-
   const schema = yup
     .object({
       name: yup.string().required(),
@@ -32,12 +29,19 @@ const ModalAddedData = () => {
     data.store = "6566e648a8d45ce8cf3f0f6b";
     AddLeave(data);
   };
-
   return (
     <div>
-      <Button className="mt-3" variant="primary" onClick={handleShow}>
-        Please Open The Modal
-      </Button>
+      <Stack direction="horizontal" onClick={handleShow} gap={2}>
+        <Badge
+          style={{
+            cursor: "pointer",
+          }}
+          pill
+          bg="primary"
+        >
+          Update
+        </Badge>
+      </Stack>
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
@@ -83,4 +87,4 @@ const ModalAddedData = () => {
   );
 };
 
-export default ModalAddedData;
+export default UpdateData;
