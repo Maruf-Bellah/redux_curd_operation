@@ -1,12 +1,16 @@
-import { useGetLeaveQuery } from "../Features/apiSlice";
+import {
+  useGetLeaveQuery,
+  useRemoveLeaveTypeMutation,
+} from "../Features/apiSlice";
 import Table from "react-bootstrap/Table";
 import { Badge, Stack } from "react-bootstrap";
 import Swal from "sweetalert2";
 import UpdateData from "./UpdateData";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const ShowData = () => {
   const { data, isLoading, error } = useGetLeaveQuery();
+  const [RemoveLeaveType] = useRemoveLeaveTypeMutation();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -15,7 +19,7 @@ const ShowData = () => {
   };
   // console.log(data);
 
-  const DeleteData = () => {
+  const DeleteData = (id) => {
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -24,13 +28,25 @@ const ShowData = () => {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        Swal.fire({
-          title: "Deleted!",
-          text: "Your file has been deleted.",
-          icon: "success",
-        });
+        try {
+          await RemoveLeaveType(id);
+          Swal.fire({
+            title: "Deleted!",
+            text: "Your file has been deleted.",
+            icon: "success",
+          }).then(() => {
+            window.location.reload();
+          });
+        } catch (error) {
+          console.error("Error deleting data", error);
+          Swal.fire({
+            title: "Error",
+            text: "An error occurred while deleting the file.",
+            icon: "error",
+          });
+        }
       }
     });
   };
@@ -55,38 +71,37 @@ const ShowData = () => {
                 <th className="text-uppercase">Delete</th>
               </tr>
             </thead>
-            {data?.data?.map((val, key) => {
-              return (
-                <tbody key={key}>
-                  <tr>
-                    <td className="text-capitalize">{val.name}</td>
+            {data?.data?.map((val, key) => (
+              <tbody key={key}>
+                <tr>
+                  <td className="text-capitalize">{val.name}</td>
 
-                    <td>{val.status}</td>
-                    <td>{val.updatedAt}</td>
-                    <td>
-                      <UpdateData
-                        isOpen={isModalOpen}
-                        onClose={handleCloseModal}
-                      />
-                    </td>
-                    <td>
-                      <Stack direction="horizontal" gap={2}>
-                        <Badge
-                          onClick={DeleteData}
-                          style={{
-                            cursor: "pointer",
-                          }}
-                          pill
-                          bg="danger"
-                        >
-                          delete
-                        </Badge>
-                      </Stack>
-                    </td>
-                  </tr>
-                </tbody>
-              );
-            })}
+                  <td>{val.status}</td>
+                  <td>{val.updatedAt}</td>
+                  <td>
+                    <UpdateData
+                      isOpen={isModalOpen}
+                      onClose={handleCloseModal}
+                      item={val}
+                    />
+                  </td>
+                  <td>
+                    <Stack direction="horizontal" gap={2}>
+                      <Badge
+                        onClick={() => DeleteData(val._id, val)}
+                        style={{
+                          cursor: "pointer",
+                        }}
+                        pill
+                        bg="danger"
+                      >
+                        delete
+                      </Badge>
+                    </Stack>
+                  </td>
+                </tr>
+              </tbody>
+            ))}
           </Table>
 
           {/* {isModalOpen && (

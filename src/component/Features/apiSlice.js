@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 const getBearerToken = () => {
-  return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NTY2ZTY0OGE4ZDQ1Y2U4Y2YzZjBmNjkiLCJtZXJjaGFudCI6IjY1NjZlNjQ4YThkNDVjZThjZjNmMGY2NyIsImlhdCI6MTcwMTUyOTcwNywiZXhwIjoxNzAxNTMzMzA3LCJ0eXBlIjoiQUNDRVNTIn0.k0xDdMI7Hw-XU45k8GlJt_CfQakjr4dGk3KazGpDafc";
+  return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NTY2ZTY0OGE4ZDQ1Y2U4Y2YzZjBmNjkiLCJtZXJjaGFudCI6IjY1NjZlNjQ4YThkNDVjZThjZjNmMGY2NyIsImlhdCI6MTcwMTYxNjUyOSwiZXhwIjoxNzAxNjIwMTI5LCJ0eXBlIjoiQUNDRVNTIn0.5tD3Ho17DM4Y3wzksKbd8zO1qZzr4oi5lt5QIKwvsAI";
 };
 
 export const apiSlice = createApi({
@@ -27,7 +27,7 @@ export const apiSlice = createApi({
     }),
     RemoveLeaveType: builder.mutation({
       query: (id) => ({
-        url: `/LeaveTypeDelete/${id}`,
+        url: `/incomes-expenses/sections/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["LeaveTypeList"],
@@ -53,14 +53,14 @@ export const apiSlice = createApi({
       },
     }),
 
-    // editLeave: builder.mutation({
-    //   query: ({ id, data }) => ({
-    //     url: `/LeaveTypeUpdate/${id}`,
-    //     method: "PATCH",
-    //     body: data,
-    //   }),
-    //   invalidatesTags: ["LeaveTypeList"],
-    // }),
+    editLeave: builder.mutation({
+      query: ({ postBody }) => ({
+        url: `/incomes-expenses/sections/${postBody._id}`,
+        method: "PATCH",
+        body: postBody,
+      }),
+      invalidatesTags: ["LeaveTypeList"],
+    }),
   }),
 });
 
@@ -68,5 +68,5 @@ export const {
   useGetLeaveQuery,
   useAddLeaveMutation,
   useRemoveLeaveTypeMutation,
-  //   useEditLeaveMutation,
+  useEditLeaveMutation,
 } = apiSlice;

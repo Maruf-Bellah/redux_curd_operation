@@ -6,11 +6,19 @@ import Modal from "react-bootstrap/Modal";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
+import { useEditLeaveMutation } from "../Features/apiSlice";
 
-const UpdateData = () => {
+const UpdateData = ({ item }) => {
+  // console.log(item);
+
+  const [updateData, setUpdateData] = useState(item);
+
+  const [editLeave] = useEditLeaveMutation();
+
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
   const schema = yup
     .object({
       name: yup.string().required(),
@@ -26,12 +34,21 @@ const UpdateData = () => {
     resolver: yupResolver(schema),
   });
   const onSubmit = (data) => {
+    console.log(data);
+
     data.store = "6566e648a8d45ce8cf3f0f6b";
-    AddLeave(data);
+    data._id = `${item?._id}`;
+    data.type = `${item.type}`;
+    editLeave({ postBody: data });
   };
+
+  const updateHandler = (data) => {
+    handleShow();
+  };
+
   return (
     <div>
-      <Stack direction="horizontal" onClick={handleShow} gap={2}>
+      <Stack direction="horizontal" onClick={updateHandler} gap={2}>
         <Badge
           style={{
             cursor: "pointer",
@@ -53,6 +70,10 @@ const UpdateData = () => {
               <Form.Label>Income Section Name</Form.Label>
               <Form.Control
                 {...register("name")}
+                value={updateData?.name}
+                onChange={(e) => {
+                  setUpdateData({ ...updateData, name: e.target.value });
+                }}
                 placeholder="Please Enter Income Section"
               />
               <p className="text-danger mt-2">{errors.name?.message}</p>
@@ -62,6 +83,10 @@ const UpdateData = () => {
 
               <Form.Select
                 {...register("status")}
+                value={updateData?.status}
+                onChange={(e) => {
+                  setUpdateData({ ...updateData, status: e.target.value });
+                }}
                 aria-label="Default select example"
               >
                 <option value="ACTIVE">ACTIVE</option>
